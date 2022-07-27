@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous">
+    </script>
+    <!-- font awesome -->
+    <script src="https://kit.fontawesome.com/76480570da.js" crossorigin="anonymous"></script>
+    <title>Register</title>
+</head>
+
+<body>
+    <div class="container" style="width: 400px; margin-top: 50px;">
+        <h1 style="text-align: center;">
+            <%= username %>
+        </h1>
+
+        <form action="/user/logout" class="text-center">
+            <button class="btn btn-secondary">Logout</button>
+        </form>
+
+        <% response.forEach(function(element) {%>
+
+        <div class="card" style="width: 400px;">
+
+
+            <!-- for loop todo -->
+            <% if(element.todos.image.data !="" ) {%>
+            <img src="data:image/<%=element.todos.image.contentType%>;base64,<%=element.todos.image.data.toString('base64')%>"
+                class="card-img-top" alt="...">
+            <% } %>
+
+            <!-- <div class="card-body">
+                <div class="form-check"> -->
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" style="display: inline;">
+
+                    <!-- check status checked or uncheck -->
+                    <% if(element.todos.status == "checked" ) {%>
+                    <form action="/todo/editStatus/<%=element.todos._id%>" method="post" style="display: inline;">
+                        <input type="hidden" name="status" value="uncheck">
+                        <input class="form-check-input" type="checkbox" value="" onChange="this.form.submit()"
+                            id=<%=element.todos._id%> checked>
+                    </form>
+                    <% } else {%>
+                    <form action="/todo/editStatus/<%=element.todos._id%>" method="post" style="display: inline;">
+                        <input type="hidden" name="status" value="checked">
+                        <input class="form-check-input" type="checkbox" value="" onChange="this.form.submit()"
+                            id=<%=element.todos._id%>>
+                    </form>
+                    <% } %>
+
+                    <!-- todo -->
+                    <label class="form-check-label" for=<%=element.todos._id%>>
+                        <strong><%=element.todos.todo%></strong>
+                    </label>
+
+                    <!-- description -->
+                    <% if(element.todos.description !="" ) {%>
+                    <p class="card-text"><%= element.todos.description %></p>
+                    <% } %>
+
+                    <!-- button -->
+                    <div class="d-grid gap-2 d-md-block position-absolute top-50 end-0 translate-middle-y">
+                        <!-- button edit todo -->
+                        <form style="display:inline;" action="/todo/edit/<%=element.todos._id%>" method="get">
+                            <button class="btn btn-warning"
+                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                                type="submit"><i class="fa fa-solid fa-pen"></i></button>
+                        </form>
+
+                        <!-- button delete todo -->
+                        <form style="display:inline;" action="/todo/delete/<%=element.todos._id%>" method="get">
+                            <button class="btn btn-danger"
+                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                                type="submit"><i class="fa fa-solid fa-trash"></i></button>
+                        </form>
+                    </div>
+
+                </li>
+            </ul>
+            <!-- </div>
+    </div> -->
+
+            <!-- for loop item -->
+            <% if(element.todos.items.length != 0 ) {%>
+            <ul class="list-group list-group-flush">
+                <% element.todos.items.forEach(function(item) {%>
+                <li class="list-group-item" style="display: inline;">
+
+                    <!-- check status item is checked or uncheck -->
+                    <% if(item.statusItem == "checked" ) {%>
+                    <form action="/todo/item/editStatus" method="post" style="display:inline;">
+                        <input type="hidden" name="status" value="uncheck">
+                        <input type="hidden" name="idTodo" value="<%=element.todos._id%>">
+                        <input type="hidden" name="idItemTodo" value="<%=item._id%>">
+                        <input class="form-check-input" type="checkbox" value="" onChange="this.form.submit()"
+                            id=<%=element.todos._id%> checked>
+                    </form>
+                    <% } else {%>
+                    <form action="/todo/item/editStatus" method="post" style="display:inline;">
+                        <input type="hidden" name="status" value="checked">
+                        <input type="hidden" name="idTodo" value="<%=element.todos._id%>">
+                        <input type="hidden" name="idItemTodo" value="<%=item._id%>">
+                        <input class="form-check-input" type="checkbox" value="" onChange="this.form.submit()"
+                            id=<%=item._id%>>
+                    </form>
+                    <% } %>
+
+                    <!-- item -->
+                    <label class="form-check-label card-subtitle mb-2 text-muted" for=<%=item._id%>>
+                        <em><%= item.item %></em>
+                    </label>
+
+
+                    <div class="d-grid gap-2 d-md-block position-absolute top-50 end-0 translate-middle-y">
+                        <!-- button edit item-->
+                        <form style="display: inline;" action="/todo/item/edit/form" method="post">
+                            <input type="hidden" name="idTodo" value="<%=element.todos._id%>">
+                            <input type="hidden" name="idItemTodo" value="<%=item._id%>">
+                            <button class="btn btn-warning"
+                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                                type="submit"><i class="fa fa-solid fa-pen"></i></button>
+                        </form>
+                        <!-- button delete item -->
+                        <form style="display: inline;" action="/todo/item/delete" method="post">
+                            <input type="hidden" name="idTodo" value="<%=element.todos._id%>">
+                            <input type="hidden" name="idItemTodo" value="<%=item._id%>">
+                            <button class="btn btn-danger"
+                                style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                                type="submit"><i class="fa fa-solid fa-trash"></i></button>
+                        </form>
+                    </div>
+
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+
+
+            <!-- tags -->
+            <% if(element.tag.length !== 0 ) {
+                const tag = element.tag.toString()
+                const text = tag.replace(/,/g, " ") %>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <p class="card-text"><%= "tags : " + text %></p>
+                </li>
+            </ul>
+            <% }%>
+
+            <div class="card-body text-end">
+
+                <!-- button create item -->
+                <form action="/todo/item/add/form" method="post" class="text-start">
+                    <div class="d-grid gap-2">
+                        <input type="hidden" name="id" value=<%=element.todos._id%>>
+                        <button type="submit" class="btn btn-success">item</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+        <% }) %>
+
+    </div>
+
+    <div class="row">
+        <div class="col text-center">
+            <form action="/todo/add/form" method="get">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-solid fa-plus fa-xl"></i></button>
+            </form>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
